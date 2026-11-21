@@ -1,0 +1,6 @@
+{
+  "name": "DaisyBooth",
+  "description": "Aesthetic pastel photobooth web app with scalloped Polaroid frames, live camera capture, real-time filters, and Laravel 11 MVC starter blueprint.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": []
+}
