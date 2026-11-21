@@ -66,7 +66,9 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
   const [activeSlot, setActiveSlot] = useState<number>(0);
 
   const [cameraActive, setCameraActive] = useState<boolean>(false);
+  const [cameraStarting, setCameraStarting] = useState<boolean>(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
+  const [cameraBlockedInFrame, setCameraBlockedInFrame] = useState<boolean>(false);
   const [countdownValue, setCountdownValue] = useState<number | null>(null);
   const [isCapturingSequence, setIsCapturingSequence] = useState<boolean>(false);
   const [flashActive, setFlashActive] = useState<boolean>(false);
@@ -180,8 +182,29 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
     });
   }, []);
 
+  // Reliably bind active MediaStream whenever video element is visible
+  useEffect(() => {
+    const video = videoRef.current;
+    const stream = streamRef.current;
+    if (cameraActive && inputMode === 'camera' && video && stream) {
+      if (video.srcObject !== stream) {
+        video.srcObject = stream;
+      }
+      video.play().catch(() => {});
+    }
+  }, [cameraActive, inputMode]);
+
   const startCamera = async () => {
     setCameraError(null);
+    setCameraBlockedInFrame(false);
+
+    if (typeof window !== 'undefined' && !window.isSecureContext) {
+      setCameraError(
+        'Akses kamera memerlukan koneksi HTTPS atau localhost yang aman.'
+      );
+      return;
+    }
+
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       setCameraError(
         'Peramban Anda tidak mendukung akses kamera langsung. Gunakan mode Unggah Foto atau Foto Contoh.'
@@ -189,25 +212,64 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
       return;
     }
 
+    setCameraStarting(true);
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 960 } },
-        audio: false,
-      });
-      streamRef.current = stream;
-      setCameraActive(true);
-      setInputMode('camera');
-
-      requestAnimationFrame(() => {
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          videoRef.current.play().catch(() => {});
+      let stream: MediaStream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 960 } },
+          audio: false,
+        });
+      } catch (innerErr) {
+        const innerName = innerErr instanceof DOMException ? innerErr.name : '';
+        if (innerName === 'NotAllowedError' || innerName === 'PermissionDeniedError' || innerName === 'SecurityError') {
+          throw innerErr;
         }
-      });
-    } catch {
-      setCameraError(
-        'Izin kamera belum aktif atau perangkat tidak tersedia. Anda dapat mencoba mode Unggah Foto atau Foto Contoh.'
-      );
+        // Fallback to widest-compatibility constraint for desktop/USB/virtual cameras
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: false,
+        });
+      }
+
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
+      }
+
+      streamRef.current = stream;
+      setInputMode('camera');
+      setCameraActive(true);
+
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        await videoRef.current.play().catch(() => {});
+      }
+    } catch (err) {
+      const errorName = err instanceof DOMException ? err.name : '';
+      const inIframe = typeof window !== 'undefined' && window.self !== window.top;
+
+      if (errorName === 'NotAllowedError' || errorName === 'PermissionDeniedError' || errorName === 'SecurityError') {
+        setCameraBlockedInFrame(inIframe);
+        setCameraError(
+          inIframe
+            ? 'Izin kamera ditolak atau dibatasi di dalam iframe pratinjau. Klik "Buka di Tab Baru" di bawah atau izinkan kamera pada bilah alamat browser.'
+            : 'Izin kamera ditolak oleh browser. Klik ikon gembok/kamera di bilah alamat browser untuk mengizinkan akses kamera.'
+        );
+      } else if (errorName === 'NotFoundError' || errorName === 'DevicesNotFoundError') {
+        setCameraError(
+          'Kamera tidak terdeteksi di perangkat ini. Pastikan webcam terpasang atau gunakan Unggah Foto / Foto Contoh.'
+        );
+      } else if (errorName === 'NotReadableError' || errorName === 'TrackStartError') {
+        setCameraError(
+          'Kamera sedang dipakai oleh aplikasi lain (seperti Zoom/Meet). Tutup aplikasi tersebut lalu coba nyalakan lagi.'
+        );
+      } else {
+        setCameraError(
+          `Kamera gagal dinyalakan${errorName ? ` (${errorName})` : ''}. Coba muat ulang halaman atau gunakan Unggah Foto.`
+        );
+      }
+    } finally {
+      setCameraStarting(false);
     }
   };
 
@@ -532,19 +594,19 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
             <div className="relative aspect-[4/3] w-full rounded-2xl overflow-hidden bg-[#FDF2F6] border border-[#F3DCE6] mb-5">
               {inputMode === 'camera' ? (
                 <>
-                  {cameraActive ? (
-                    <video
-                      ref={videoRef}
-                      autoPlay
-                      playsInline
-                      muted
-                      style={{
-                        filter: currentFilter.cssFilter,
-                        transform: mirrored ? 'scaleX(-1)' : 'none',
-                      }}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
+                  <video
+                    ref={videoRef}
+                    autoPlay
+                    playsInline
+                    muted
+                    style={{
+                      filter: currentFilter.cssFilter,
+                      transform: mirrored ? 'scaleX(-1)' : 'none',
+                    }}
+                    className={cameraActive ? 'w-full h-full object-cover' : 'hidden'}
+                  />
+
+                  {!cameraActive && (
                     <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center">
                       <MascotSprite
                         pose="cameraHug"
@@ -560,10 +622,11 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
                       <div className="flex flex-wrap items-center justify-center gap-3">
                         <button
                           type="button"
+                          disabled={cameraStarting}
                           onClick={startCamera}
-                          className="px-5 py-2.5 rounded-xl bg-[#F49DBB] hover:bg-[#EB87AA] text-[#2B1B23] font-semibold text-sm transition-colors cursor-pointer whitespace-nowrap"
+                          className="px-5 py-2.5 rounded-xl bg-[#F49DBB] hover:bg-[#EB87AA] disabled:opacity-60 text-[#2B1B23] font-semibold text-sm transition-colors cursor-pointer whitespace-nowrap"
                         >
-                          Nyalakan Kamera
+                          {cameraStarting ? 'Menghubungkan...' : 'Nyalakan Kamera'}
                         </button>
                         <button
                           type="button"
@@ -574,9 +637,19 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
                         </button>
                       </div>
                       {cameraError && (
-                        <p className="mt-4 text-xs text-[#A33058] max-w-md bg-[#FDE8EF] px-4 py-2 rounded-xl">
-                          {cameraError}
-                        </p>
+                        <div className="mt-4 max-w-md bg-[#FDE8EF] px-4 py-2.5 rounded-xl text-xs text-[#A33058] space-y-2">
+                          <p>{cameraError}</p>
+                          {cameraBlockedInFrame && typeof window !== 'undefined' && (
+                            <a
+                              href={window.location.href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-block font-semibold underline text-[#2F2128]"
+                            >
+                              Buka di Tab Baru
+                            </a>
+                          )}
+                        </div>
                       )}
                     </div>
                   )}
