@@ -1,6 +1,13 @@
 export type FrameThemeId = 'blush-daisy' | 'lavender-cloud' | 'buttercream' | 'berry-sorbet';
 
-export type StripLayoutId = 'strip-4' | 'grid-2x2' | 'strip-3' | 'polaroid-1';
+export type StripLayoutId =
+  | 'house-studio'
+  | 'kid-again'
+  | 'birthday-cal'
+  | 'crossword-cute'
+  | 'strip-4'
+  | 'grid-2x2'
+  | 'polaroid-1';
 
 export type PhotoFilterId =
   | 'original'
@@ -10,7 +17,7 @@ export type PhotoFilterId =
   | 'rosy-glow'
   | 'bw-editorial';
 
-export type StickerMotifId = 'daisy' | 'butterfly' | 'ribbon' | 'none';
+export type StickerMotifId = 'daisy' | 'butterfly' | 'ribbon' | 'mascot' | 'none';
 
 export interface FrameTheme {
   id: FrameThemeId;
@@ -30,6 +37,8 @@ export interface StripLayout {
   name: string;
   slots: number;
   aspectLabel: string;
+  category: 'scrapbook' | 'classic';
+  description: string;
 }
 
 export interface PhotoFilter {

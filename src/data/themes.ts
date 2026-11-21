@@ -12,6 +12,7 @@ export const SAMPLE_POSES: string[] = [
   STUDIO_ASSETS.samplePose2,
   STUDIO_ASSETS.heroLeft,
   STUDIO_ASSETS.heroRight,
+  STUDIO_ASSETS.samplePose1,
 ];
 
 export const FRAME_THEMES: FrameTheme[] = [
@@ -66,10 +67,62 @@ export const FRAME_THEMES: FrameTheme[] = [
 ];
 
 export const STRIP_LAYOUTS: StripLayout[] = [
-  { id: 'strip-4', name: '4-Pose Strip', slots: 4, aspectLabel: '1 × 4 Vertikal' },
-  { id: 'grid-2x2', name: '2×2 Bento', slots: 4, aspectLabel: '2 × 2 Kotak' },
-  { id: 'strip-3', name: '3-Pose Strip', slots: 3, aspectLabel: '1 × 3 Vertikal' },
-  { id: 'polaroid-1', name: '1 Polaroid', slots: 1, aspectLabel: '1 × 1 Klasik' },
+  {
+    id: 'house-studio',
+    name: 'Rumah Polka',
+    slots: 2,
+    aspectLabel: '2 Pose · Rumah',
+    category: 'scrapbook',
+    description: 'Latar polka dot dengan atap rumah pastel & tag imut',
+  },
+  {
+    id: 'kid-again',
+    name: 'Nostalgia Polaroid',
+    slots: 5,
+    aspectLabel: '5 Pose · Kolase',
+    category: 'scrapbook',
+    description: '5 Polaroid miring, hati pastel, bintang & teks mesin tik',
+  },
+  {
+    id: 'birthday-cal',
+    name: 'Kalender & Strip',
+    slots: 4,
+    aspectLabel: '4 Pose · Kalender',
+    category: 'scrapbook',
+    description: 'Kalender tanggal spesial + strip miring polka mint',
+  },
+  {
+    id: 'crossword-cute',
+    name: 'Teka-Teki CUTE',
+    slots: 4,
+    aspectLabel: '4 Pose · Grid',
+    category: 'scrapbook',
+    description: 'Kolase kotak teka-teki huruf C-U-T-E & bingkai bulat',
+  },
+  {
+    id: 'strip-4',
+    name: '4-Pose Strip',
+    slots: 4,
+    aspectLabel: '1 × 4 Vertikal',
+    category: 'classic',
+    description: 'Strip klasik vertikal empat bingkai',
+  },
+  {
+    id: 'grid-2x2',
+    name: '2×2 Bento',
+    slots: 4,
+    aspectLabel: '2 × 2 Kotak',
+    category: 'classic',
+    description: 'Kolase grid empat kotak seimbang',
+  },
+  {
+    id: 'polaroid-1',
+    name: '1 Polaroid',
+    slots: 1,
+    aspectLabel: '1 × 1 Klasik',
+    category: 'classic',
+    description: 'Bingkai instan satu foto ukuran penuh',
+  },
 ];
 
 export const PHOTO_FILTERS: PhotoFilter[] = [
@@ -82,6 +135,7 @@ export const PHOTO_FILTERS: PhotoFilter[] = [
 ];
 
 export const STICKER_MOTIFS: { id: StickerMotifId; name: string }[] = [
+  { id: 'mascot', name: 'Maskot DaisyBooth' },
   { id: 'daisy', name: 'Bunga Daisy' },
   { id: 'butterfly', name: 'Kupu-Kupu' },
   { id: 'ribbon', name: 'Pita Satin' },

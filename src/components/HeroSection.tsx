@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Camera } from 'lucide-react';
 import { STUDIO_ASSETS } from '../data/themes';
+import { MascotSprite } from './MascotSprite';
 import { ButterflyMotif, DaisyMotif } from './ScallopDivider';
 
 interface HeroSectionProps {
@@ -55,7 +56,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartBooth }) => {
       <ButterflyMotif className="hidden lg:block absolute top-16 right-[22%] w-11 h-11 opacity-85 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-8">
-        {/* Left tilted Polaroid */}
+        {/* Left tilted Polaroid + Mascot */}
         <div className="relative order-2 lg:order-1 shrink-0">
           <PolaroidCard
             src={STUDIO_ASSETS.heroLeft}
@@ -64,10 +65,24 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartBooth }) => {
             tiltClass="-rotate-6"
           />
           <DaisyMotif className="absolute -bottom-4 -left-4 w-10 h-10 drop-shadow-sm pointer-events-none" />
+          <div className="hidden sm:block absolute -bottom-10 -right-14 z-10 drop-shadow-[0_10px_18px_rgba(92,56,74,0.16)]">
+            <MascotSprite
+              pose="main"
+              alt="Maskot DaisyBooth memegang kamera pink dan strip foto"
+              className="w-36 h-36 lg:w-44 lg:h-44"
+            />
+          </div>
         </div>
 
         {/* Center editorial boutique centerpiece */}
         <div className="order-1 lg:order-2 max-w-xl text-center">
+          <div className="sm:hidden flex justify-center mb-2">
+            <MascotSprite
+              pose="main"
+              alt="Maskot DaisyBooth memegang kamera pink dan strip foto"
+              className="w-36 h-36"
+            />
+          </div>
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#835B6E] mb-3">
             Studio Photobooth Pastel
           </p>

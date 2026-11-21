@@ -1,5 +1,6 @@
 import React from 'react';
-import { ButterflyMotif, DaisyMotif, ScallopDivider } from './ScallopDivider';
+import { MascotSprite } from './MascotSprite';
+import { ButterflyMotif, ScallopDivider } from './ScallopDivider';
 
 export const Footer: React.FC = () => {
   return (
@@ -9,7 +10,11 @@ export const Footer: React.FC = () => {
       <div className="bg-[#F9C5DA] py-10 px-6 text-[#35242D]">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
-            <DaisyMotif className="w-8 h-8" centerColor="#F8E59E" />
+            <MascotSprite
+              pose="cameraHug"
+              alt="Maskot DaisyBooth"
+              className="w-14 h-14 drop-shadow-xs"
+            />
             <div>
               <span className="font-serif text-xl font-bold block leading-none">DaisyBooth</span>
               <span className="text-xs text-[#5A424E]">Studio Photobooth Pastel & Galeri Strip</span>

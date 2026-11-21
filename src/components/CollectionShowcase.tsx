@@ -1,6 +1,7 @@
 import React from 'react';
 import { FRAME_THEMES } from '../data/themes';
 import { FrameThemeId } from '../types/photobooth';
+import { MascotSprite } from './MascotSprite';
 import { DaisyMotif, ScallopDivider } from './ScallopDivider';
 
 interface CollectionShowcaseProps {
@@ -18,12 +19,19 @@ export const CollectionShowcase: React.FC<CollectionShowcaseProps> = ({
 
       <div className="bg-[#C8C6F2] py-16 md:py-20 px-6">
         <div className="max-w-6xl mx-auto text-center">
-          <div className="inline-flex items-center justify-center gap-3 mb-2">
-            <DaisyMotif className="w-7 h-7" centerColor="#F8E59E" />
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#352E5B]">
-              Koleksi Tema Bingkai
-            </p>
-            <DaisyMotif className="w-7 h-7" centerColor="#F9C5DA" />
+          <div className="flex flex-col items-center">
+            <MascotSprite
+              pose="photoFan"
+              alt="Maskot DaisyBooth membawa kipas foto Polaroid"
+              className="w-28 h-28 mb-2 drop-shadow-sm"
+            />
+            <div className="inline-flex items-center justify-center gap-3 mb-2">
+              <DaisyMotif className="w-7 h-7" centerColor="#F8E59E" />
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#352E5B]">
+                Koleksi Tema Bingkai
+              </p>
+              <DaisyMotif className="w-7 h-7" centerColor="#F9C5DA" />
+            </div>
           </div>
 
           <h2

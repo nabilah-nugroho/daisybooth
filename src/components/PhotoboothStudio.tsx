@@ -27,6 +27,7 @@ import {
 } from '../types/photobooth';
 import { playCountdownBeep, playShutterSound } from '../utils/sound';
 import { renderPhotoStripCanvas } from '../utils/stripRenderer';
+import { MascotSprite } from './MascotSprite';
 
 interface PhotoboothStudioProps {
   selectedTheme: FrameThemeId;
@@ -34,20 +35,33 @@ interface PhotoboothStudioProps {
   onStripSaved: (strip: SavedStrip) => void;
 }
 
+const DEFAULT_CAPTIONS: Record<StripLayoutId, { caption: string; subCaption: string }> = {
+  'house-studio': { caption: 'Daisy House!', subCaption: '@daisybooth' },
+  'kid-again': { caption: 'i wanna be a kid again', subCaption: '20 11 26' },
+  'birthday-cal': { caption: 'Happy', subCaption: 'special day' },
+  'crossword-cute': { caption: 'CUTE TOO <3', subCaption: 'DaisyBooth Edition' },
+  'strip-4': { caption: 'Sweet Memories', subCaption: '' },
+  'grid-2x2': { caption: 'Sweet Memories', subCaption: '' },
+  'polaroid-1': { caption: 'Sweet Memories', subCaption: '' },
+};
+
 export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
   selectedTheme,
   onSelectTheme,
   onStripSaved,
 }) => {
-  const [layout, setLayout] = useState<StripLayoutId>('strip-4');
+  const [layout, setLayout] = useState<StripLayoutId>('house-studio');
   const [filter, setFilter] = useState<PhotoFilterId>('soft-peach');
-  const [sticker, setSticker] = useState<StickerMotifId>('daisy');
-  const [caption, setCaption] = useState<string>('Sweet Memories');
+  const [sticker, setSticker] = useState<StickerMotifId>('mascot');
+  const [caption, setCaption] = useState<string>(DEFAULT_CAPTIONS['house-studio'].caption);
+  const [subCaption, setSubCaption] = useState<string>(DEFAULT_CAPTIONS['house-studio'].subCaption);
+  const [captionEdited, setCaptionEdited] = useState<boolean>(false);
+
   const [countdownSeconds, setCountdownSeconds] = useState<number>(3);
   const [mirrored, setMirrored] = useState<boolean>(true);
   const [inputMode, setInputMode] = useState<'camera' | 'upload'>('camera');
 
-  const [photos, setPhotos] = useState<(string | null)[]>([null, null, null, null]);
+  const [photos, setPhotos] = useState<(string | null)[]>([null, null, null, null, null]);
   const [activeSlot, setActiveSlot] = useState<number>(0);
 
   const [cameraActive, setCameraActive] = useState<boolean>(false);
@@ -75,8 +89,27 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
     [filter]
   );
 
+  const scrapbookLayouts = useMemo(
+    () => STRIP_LAYOUTS.filter((item) => item.category === 'scrapbook'),
+    []
+  );
+
+  const classicLayouts = useMemo(
+    () => STRIP_LAYOUTS.filter((item) => item.category === 'classic'),
+    []
+  );
+
   const slotCount = currentLayout.slots;
   const filledCount = photos.slice(0, slotCount).filter(Boolean).length;
+
+  const handleSelectLayout = (nextLayout: StripLayoutId) => {
+    setLayout(nextLayout);
+    setActiveSlot((prev) => Math.min(prev, (STRIP_LAYOUTS.find((l) => l.id === nextLayout)?.slots ?? 4) - 1));
+    if (!captionEdited) {
+      setCaption(DEFAULT_CAPTIONS[nextLayout].caption);
+      setSubCaption(DEFAULT_CAPTIONS[nextLayout].subCaption);
+    }
+  };
 
   // Render live canvas preview whenever strip parameters change
   useEffect(() => {
@@ -91,6 +124,7 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
       filter,
       sticker,
       caption,
+      subCaption,
     }).catch(() => {
       if (!cancelled) {
         // Ignore transient image decode cancellations
@@ -100,7 +134,7 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
     return () => {
       cancelled = true;
     };
-  }, [photos, slotCount, layout, selectedTheme, filter, sticker, caption]);
+  }, [photos, slotCount, layout, selectedTheme, filter, sticker, caption, subCaption]);
 
   const stopCamera = useCallback(() => {
     sequenceAbortRef.current = true;
@@ -297,9 +331,12 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
   };
 
   const handleResetAll = () => {
-    setPhotos([null, null, null, null]);
+    setPhotos([null, null, null, null, null]);
     setActiveSlot(0);
     setSaveMessage(null);
+    setCaptionEdited(false);
+    setCaption(DEFAULT_CAPTIONS[layout].caption);
+    setSubCaption(DEFAULT_CAPTIONS[layout].subCaption);
   };
 
   const handleDownloadPng = async () => {
@@ -311,12 +348,13 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
       filter,
       sticker,
       caption,
+      subCaption,
     });
 
     const url = exportCanvas.toDataURL('image/png');
     const link = document.createElement('a');
     link.href = url;
-    link.download = `daisybooth-${selectedTheme}-${Date.now()}.png`;
+    link.download = `daisybooth-${layout}-${selectedTheme}-${Date.now()}.png`;
     link.click();
   };
 
@@ -338,6 +376,7 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
         filter,
         sticker,
         caption,
+        subCaption,
       });
 
       const imageData = exportCanvas.toDataURL('image/png');
@@ -360,7 +399,7 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
       }
 
       onStripSaved(data.strip);
-      setSaveMessage({ type: 'success', text: 'Strip foto berhasil disimpan ke Galeri!' });
+      setSaveMessage({ type: 'success', text: 'Hasil kolase berhasil disimpan ke Galeri!' });
     } catch (error) {
       setSaveMessage({
         type: 'error',
@@ -374,21 +413,58 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
   return (
     <section id="studio" className="py-16 md:py-20 px-6 bg-[#FFF8FA]">
       <div className="max-w-7xl mx-auto">
-        <div className="max-w-2xl mx-auto text-center mb-12">
+        <div className="max-w-2xl mx-auto text-center mb-10">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#835B6E] mb-2">
             Ruang Studio Interaktif
           </p>
           <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#35242D] mb-3" style={{ textWrap: 'balance' }}>
-            Ciptakan Strip Foto Estetik Anda
+            Pilih Konsep Kolase & Ambil Posemu
           </h2>
           <p className="text-[#5A424E] text-base">
-            Nyalakan kamera atau unggah foto, pilih filter pastel, dan sesuaikan bingkai secara langsung.
+            Mulai dari bingkai rumah polka, kolase Polaroid nostalgia, kalender ulang tahun, hingga teka-teki huruf imut.
           </p>
+        </div>
+
+        {/* Visual Scrapbook Concept Bar */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+          {scrapbookLayouts.map((concept) => {
+            const active = layout === concept.id;
+            return (
+              <button
+                key={concept.id}
+                type="button"
+                onClick={() => handleSelectLayout(concept.id)}
+                className={`text-left p-4 rounded-2xl border transition-all duration-150 cursor-pointer ${
+                  active
+                    ? 'bg-[#FCEAF1] border-[#E67FA4] shadow-[0_6px_18px_rgba(230,127,164,0.16)]'
+                    : 'bg-white border-[#F2DCE6] hover:border-[#E2B9CB]'
+                }`}
+              >
+                <div className="flex items-center justify-between gap-2 mb-1.5">
+                  <span className="font-serif text-lg font-bold text-[#35242D]">
+                    {concept.name}
+                  </span>
+                  <span className="text-xs font-medium text-[#7A5B6B] whitespace-nowrap">
+                    {concept.slots} Pose
+                  </span>
+                </div>
+                <p className="text-xs text-[#5A424E] leading-relaxed">{concept.description}</p>
+              </button>
+            );
+          })}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Left Stage: Camera Viewfinder, Upload & Filter Controls */}
-          <div className="lg:col-span-7 bg-white rounded-3xl border border-[#F2DCE6] p-6 sm:p-8 shadow-[0_10px_30px_rgba(92,56,74,0.05)]">
+          <div className="relative lg:col-span-7 bg-white rounded-3xl border border-[#F2DCE6] p-6 sm:p-8 shadow-[0_10px_30px_rgba(92,56,74,0.05)]">
+            <div className="hidden md:block absolute -top-16 right-8 pointer-events-none">
+              <MascotSprite
+                pose="windowPeek"
+                alt="Maskot DaisyBooth mengintip di atas jendela studio"
+                className="w-28 h-28"
+              />
+            </div>
+
             {/* Mode Switcher + Quick Sample Action */}
             <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
               <div className="inline-flex items-center gap-1 p-1 bg-[#FDF2F6] rounded-xl border border-[#F3DCE6]">
@@ -443,14 +519,16 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
                     />
                   ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center">
-                      <div className="w-16 h-16 rounded-2xl bg-[#FCE2ED] text-[#B84C77] flex items-center justify-center mb-4">
-                        <Camera className="w-8 h-8" />
-                      </div>
+                      <MascotSprite
+                        pose="cameraHug"
+                        alt="Maskot DaisyBooth memeluk kamera pink"
+                        className="w-24 h-24 sm:w-32 sm:h-32 mb-2 shrink-0"
+                      />
                       <h3 className="font-serif text-xl font-semibold text-[#35242D] mb-2">
                         Siap Berpose di Studio?
                       </h3>
-                      <p className="text-sm text-[#6D515F] max-w-sm mb-6">
-                        Aktifkan kamera peramban Anda untuk mengambil strip foto otomatis, atau coba dengan Foto Contoh.
+                      <p className="text-sm text-[#6D515F] max-w-sm mb-5">
+                        Aktifkan kamera peramban Anda untuk mengisi {slotCount} pose otomatis, atau coba dengan Foto Contoh.
                       </p>
                       <div className="flex flex-wrap items-center justify-center gap-3">
                         <button
@@ -476,7 +554,6 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
                     </div>
                   )}
 
-                  {/* Countdown overlay */}
                   {countdownValue !== null && (
                     <div className="absolute inset-0 bg-[#35242D]/25 backdrop-blur-[2px] flex items-center justify-center">
                       <span className="font-mono tabular-nums text-7xl sm:text-8xl font-bold text-white drop-shadow-md">
@@ -485,7 +562,6 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
                     </div>
                   )}
 
-                  {/* Shutter flash overlay */}
                   {flashActive && (
                     <div className="absolute inset-0 bg-white animate-flash pointer-events-none" />
                   )}
@@ -499,7 +575,7 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
                     Unggah Foto Dari Perangkat
                   </h3>
                   <p className="text-sm text-[#6D515F] max-w-sm mb-6">
-                    Pilih hingga {slotCount} foto sekaligus untuk mengisi slot strip secara otomatis.
+                    Pilih hingga {slotCount} foto sekaligus untuk mengisi kolase {currentLayout.name}.
                   </p>
                   <input
                     ref={fileInputRef}
@@ -569,7 +645,7 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
               </div>
             )}
 
-            {/* Slot Thumbnails */}
+            {/* Dynamic Pose Slot Thumbnails (supports 1 to 5 slots) */}
             <div className="mb-6">
               <div className="flex items-center justify-between mb-2.5">
                 <span className="text-sm font-semibold text-[#35242D]">
@@ -580,7 +656,17 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
                 </span>
               </div>
 
-              <div className="grid grid-cols-4 gap-3">
+              <div
+                className={`grid gap-3 ${
+                  slotCount === 5
+                    ? 'grid-cols-3 sm:grid-cols-5'
+                    : slotCount === 2
+                    ? 'grid-cols-2 max-w-md'
+                    : slotCount === 1
+                    ? 'grid-cols-1 max-w-[180px]'
+                    : 'grid-cols-2 sm:grid-cols-4'
+                }`}
+              >
                 {Array.from({ length: slotCount }).map((_, idx) => {
                   const photo = photos[idx];
                   const isActive = activeSlot === idx;
@@ -674,7 +760,7 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
           {/* Right Stage: Live Strip Canvas Preview & Customization */}
           <div className="lg:col-span-5 bg-white rounded-3xl border border-[#F2DCE6] p-6 sm:p-8 shadow-[0_10px_30px_rgba(92,56,74,0.05)]">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-serif text-xl font-bold text-[#35242D]">Pratinjau Hasil Strip</h3>
+              <h3 className="font-serif text-xl font-bold text-[#35242D]">Pratinjau Hasil Kolase</h3>
               <button
                 type="button"
                 onClick={handleResetAll}
@@ -686,32 +772,31 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
             </div>
 
             {/* Live Canvas Container */}
-            <div className="bg-[#FFF4F8] rounded-2xl border border-[#F3DCE6] p-5 flex items-center justify-center mb-6 min-h-[340px]">
+            <div className="bg-[#FFF4F8] rounded-2xl border border-[#F3DCE6] p-4 flex items-center justify-center mb-6 min-h-[360px]">
               <canvas
                 ref={previewCanvasRef}
-                className="max-h-[430px] w-auto max-w-full rounded-xl shadow-[0_12px_28px_rgba(68,40,56,0.12)]"
+                className="max-h-[440px] w-auto max-w-full rounded-xl shadow-[0_12px_28px_rgba(68,40,56,0.12)]"
               />
             </div>
 
-            {/* Layout Selector */}
+            {/* Classic & All Layout Selector */}
             <div className="mb-5">
               <p className="text-xs font-semibold uppercase tracking-wider text-[#7A5B6B] mb-2">
-                Tata Letak Strip
+                Semua Format Tata Letak
               </p>
-              <div className="grid grid-cols-2 gap-2">
-                {STRIP_LAYOUTS.map((item) => (
+              <div className="flex flex-wrap gap-2">
+                {[...scrapbookLayouts, ...classicLayouts].map((item) => (
                   <button
                     key={item.id}
                     type="button"
-                    onClick={() => setLayout(item.id)}
-                    className={`px-3 py-2 rounded-xl border text-left transition-colors cursor-pointer ${
+                    onClick={() => handleSelectLayout(item.id)}
+                    className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors cursor-pointer whitespace-nowrap ${
                       layout === item.id
                         ? 'bg-[#FCEAF1] border-[#E689AB] text-[#35242D]'
                         : 'bg-white border-[#F0DAE4] text-[#5A424E] hover:bg-[#FFF8FA]'
                     }`}
                   >
-                    <div className="text-xs font-semibold">{item.name}</div>
-                    <div className="text-[11px] text-[#7A5B6B]">{item.aspectLabel}</div>
+                    {item.name}
                   </button>
                 ))}
               </div>
@@ -720,7 +805,7 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
             {/* Frame Theme Swatches */}
             <div className="mb-5">
               <p className="text-xs font-semibold uppercase tracking-wider text-[#7A5B6B] mb-2">
-                Tema Bingkai Pastel
+                Palet Warna Pastel
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {FRAME_THEMES.map((theme) => {
@@ -751,8 +836,8 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
               </div>
             </div>
 
-            {/* Sticker Motif + Custom Caption */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+            {/* Sticker Motif + Custom Captions */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wider text-[#7A5B6B] mb-2">
                   Ornamen Stiker
@@ -775,15 +860,39 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
                   htmlFor="strip-caption-input"
                   className="block text-xs font-semibold uppercase tracking-wider text-[#7A5B6B] mb-2"
                 >
-                  Teks Bawah Strip
+                  Judul Kolase
                 </label>
                 <input
                   id="strip-caption-input"
                   type="text"
-                  maxLength={36}
+                  maxLength={32}
                   value={caption}
-                  onChange={(e) => setCaption(e.target.value)}
-                  placeholder="Sweet Memories"
+                  onChange={(e) => {
+                    setCaptionEdited(true);
+                    setCaption(e.target.value);
+                  }}
+                  placeholder="Daisy House!"
+                  className="w-full px-3 py-2 rounded-xl border border-[#EED3DF] bg-white text-sm text-[#35242D] focus:outline-2 focus:outline-[#E689AB]"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="strip-subcaption-input"
+                  className="block text-xs font-semibold uppercase tracking-wider text-[#7A5B6B] mb-2"
+                >
+                  Teks / Tanggal
+                </label>
+                <input
+                  id="strip-subcaption-input"
+                  type="text"
+                  maxLength={28}
+                  value={subCaption}
+                  onChange={(e) => {
+                    setCaptionEdited(true);
+                    setSubCaption(e.target.value);
+                  }}
+                  placeholder="@daisybooth"
                   className="w-full px-3 py-2 rounded-xl border border-[#EED3DF] bg-white text-sm text-[#35242D] focus:outline-2 focus:outline-[#E689AB]"
                 />
               </div>

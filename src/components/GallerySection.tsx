@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Download, Expand, Image as ImageIcon, Trash2, X } from 'lucide-react';
+import { Download, Expand, Trash2, X } from 'lucide-react';
 import { FRAME_THEMES, STRIP_LAYOUTS } from '../data/themes';
 import { SavedStrip } from '../types/photobooth';
+import { MascotSprite } from './MascotSprite';
 
 interface GallerySectionProps {
   strips: SavedStrip[];
@@ -81,9 +82,11 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
           </div>
         ) : strips.length === 0 ? (
           <div className="bg-white rounded-3xl border border-[#F2DCE6] p-12 text-center max-w-2xl mx-auto">
-            <div className="w-14 h-14 rounded-2xl bg-[#FCEAF1] text-[#C95684] flex items-center justify-center mx-auto mb-4">
-              <ImageIcon className="w-7 h-7" />
-            </div>
+            <MascotSprite
+              pose="sittingStrip"
+              alt="Maskot DaisyBooth duduk memandangi strip foto"
+              className="w-36 h-36 mx-auto mb-3"
+            />
             <h3 className="font-serif text-2xl font-bold text-[#35242D] mb-2">
               Galeri Masih Kosong
             </h3>

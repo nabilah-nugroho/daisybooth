@@ -43,7 +43,7 @@ class PhotoboothController extends Controller
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:80'],
             'frameTheme' => ['required', 'string', 'in:blush-daisy,lavender-cloud,buttercream,berry-sorbet'],
-            'layout' => ['required', 'string', 'in:strip-4,grid-2x2,strip-3,polaroid-1'],
+            'layout' => ['required', 'string', 'in:house-studio,kid-again,birthday-cal,crossword-cute,strip-4,grid-2x2,polaroid-1'],
             'filter' => ['required', 'string', 'max:40'],
             'sticker' => ['required', 'string', 'max:40'],
             'imageData' => ['required', 'string', 'starts_with:data:image/png;base64,'],
