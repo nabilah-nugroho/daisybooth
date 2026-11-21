@@ -43,22 +43,21 @@ export const LaravelBlueprintSection: React.FC = () => {
   };
 
   return (
-    <section id="laravel" className="py-16 md:py-20 px-6 bg-[#FCEEF4] border-t border-[#F2DCE6]">
+    <section id="laravel" className="py-14 px-6 bg-[#FCEEF4] border-t border-[#F2DCE6]">
       <div className="max-w-6xl mx-auto">
-        <div className="max-w-2xl mb-10">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#835B6E] mb-2">
+        <div className="max-w-2xl mb-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#9B5A76] mb-1.5">
             Struktur MVC Laravel 11
           </p>
-          <h2 className="font-serif text-3xl font-bold text-[#35242D] mb-3">
-            Kode Sumber Siap Pakai Untuk Proyek Laravel
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#2F2128] mb-2">
+            Kode Sumber Siap Pakai Untuk Laravel
           </h2>
-          <p className="text-sm sm:text-base text-[#5A424E] leading-relaxed">
-            Pratinjau langsung berjalan pada Node.js dan React di lingkungan ini. Untuk implementasi di server PHP Anda, seluruh berkas rute, model, migrasi, controller, dan Blade template tersedia di direktori <code className="font-mono text-xs bg-white px-2 py-0.5 rounded border border-[#EED3DF]">laravel/</code> atau salin langsung di bawah ini.
+          <p className="text-sm text-[#5E4652] leading-relaxed">
+            Salin berkas rute, model, migrasi, controller, dan Blade template dari direktori <code className="font-mono text-xs bg-white px-2 py-0.5 rounded border border-[#EED3DF]">laravel/</code> di bawah ini untuk server PHP Anda.
           </p>
         </div>
 
-        <div className="bg-white rounded-3xl border border-[#EED3DF] overflow-hidden shadow-[0_10px_28px_rgba(92,56,74,0.06)]">
-          {/* File Tabs */}
+        <div className="bg-white rounded-3xl border border-[#EED3DF] overflow-hidden">
           <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 bg-[#FFF8FA] border-b border-[#F2DCE6]">
             <div className="flex flex-wrap items-center gap-1.5">
               {files.map((file) => (
@@ -66,10 +65,10 @@ export const LaravelBlueprintSection: React.FC = () => {
                   key={file.key}
                   type="button"
                   onClick={() => setActiveKey(file.key)}
-                  className={`px-3.5 py-1.5 rounded-lg text-xs font-mono transition-colors cursor-pointer whitespace-nowrap ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-colors cursor-pointer whitespace-nowrap ${
                     activeKey === file.key
-                      ? 'bg-[#35242D] text-white'
-                      : 'text-[#5A424E] hover:bg-[#FCEAF1]'
+                      ? 'bg-[#2F2128] text-white'
+                      : 'text-[#5E4652] hover:bg-[#FCEAF1]'
                   }`}
                 >
                   {file.label}
@@ -81,7 +80,7 @@ export const LaravelBlueprintSection: React.FC = () => {
               type="button"
               onClick={handleCopy}
               disabled={!currentFile}
-              className="px-3.5 py-1.5 rounded-lg bg-[#FCEAF1] hover:bg-[#F9D8E6] text-[#35242D] text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap"
+              className="px-3.5 py-1.5 rounded-lg bg-[#FCEAF1] hover:bg-[#F9D8E6] text-[#2F2128] text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap"
             >
               {copiedKey === currentFile?.key ? (
                 <>
@@ -97,8 +96,7 @@ export const LaravelBlueprintSection: React.FC = () => {
             </button>
           </div>
 
-          {/* Code Viewer */}
-          <div className="p-5 bg-[#2A1D24] text-[#FCEEF4] overflow-x-auto max-h-[420px]">
+          <div className="p-5 bg-[#2A1D24] text-[#FCEEF4] overflow-x-auto max-h-[380px]">
             {loading ? (
               <div className="flex items-center gap-2 text-xs font-mono text-[#D9BAC8]">
                 <Code2 className="w-4 h-4" />

@@ -51,24 +51,24 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
   };
 
   return (
-    <section id="galeri" className="py-16 md:py-20 px-6 bg-[#FFF8FA]">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+    <section id="galeri" className="py-14 md:py-18 px-6 bg-[#FFF9FB]">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#835B6E] mb-2">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#9B5A76] mb-1.5">
               Arsip Kenangan
             </p>
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#35242D]">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#2F2128]">
               Galeri Strip Foto
             </h2>
           </div>
-          <p className="text-sm text-[#5A424E]">
-            Semua strip yang Anda simpan dari studio tersimpan rapi untuk diunduh kembali kapan saja.
+          <p className="text-sm text-[#644B58]">
+            Semua strip yang Anda simpan dari studio tersimpan di sini untuk diunduh kembali.
           </p>
         </div>
 
         {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {[0, 1, 2, 3].map((idx) => (
               <div
                 key={idx}
@@ -81,32 +81,32 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
             ))}
           </div>
         ) : strips.length === 0 ? (
-          <div className="bg-white rounded-3xl border border-[#F2DCE6] p-12 text-center max-w-2xl mx-auto">
+          <div className="bg-white rounded-3xl border border-[#F2DCE6] p-10 text-center max-w-xl mx-auto">
             <MascotSprite
               pose="sittingStrip"
               alt="Maskot DaisyBooth duduk memandangi strip foto"
-              className="w-36 h-36 mx-auto mb-3"
+              className="w-28 h-28 mx-auto mb-3"
             />
-            <h3 className="font-serif text-2xl font-bold text-[#35242D] mb-2">
+            <h3 className="text-xl font-bold text-[#2F2128] mb-2">
               Galeri Masih Kosong
             </h3>
-            <p className="text-sm text-[#5A424E] max-w-md mx-auto mb-6">
-              Ambil foto di ruang studio atau gunakan foto contoh, lalu tekan tombol Simpan ke Galeri untuk mengabadikan strip pertama Anda.
+            <p className="text-sm text-[#644B58] max-w-md mx-auto mb-6">
+              Ambil foto di ruang studio atau gunakan foto contoh, lalu klik Simpan ke Galeri untuk menyimpannya di sini.
             </p>
             <button
               type="button"
               onClick={onJumpToStudio}
-              className="px-6 py-2.5 rounded-xl bg-[#F49DBB] hover:bg-[#EB87AA] text-[#2E1F27] font-semibold text-sm transition-colors cursor-pointer"
+              className="px-6 py-2.5 rounded-xl bg-[#F49DBB] hover:bg-[#EB87AA] text-[#2B1B23] font-semibold text-sm transition-colors cursor-pointer"
             >
               Ke Studio Sekarang
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {strips.map((strip) => (
               <article
                 key={strip.id}
-                className="group bg-white rounded-2xl border border-[#F2DCE6] p-4 shadow-[0_6px_18px_rgba(92,56,74,0.04)] hover:-translate-y-0.5 hover:shadow-[0_12px_26px_rgba(92,56,74,0.08)] transition-all duration-200 flex flex-col"
+                className="group bg-white rounded-2xl border border-[#F2DCE6] p-4 hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(92,56,74,0.08)] transition-all duration-200 flex flex-col"
               >
                 <div
                   onClick={() => setActiveLightbox(strip)}
@@ -118,16 +118,15 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
                     referrerPolicy="no-referrer"
                     className="max-h-full max-w-full object-contain rounded-lg"
                   />
-                  <span className="absolute top-2.5 right-2.5 w-8 h-8 rounded-lg bg-white/90 text-[#35242D] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-xs">
+                  <span className="absolute top-2.5 right-2.5 w-8 h-8 rounded-lg bg-white/90 text-[#2F2128] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-xs">
                     <Expand className="w-4 h-4" />
                   </span>
                 </div>
 
-                <h3 className="font-serif font-semibold text-base text-[#35242D] truncate">
+                <h3 className="font-bold text-sm text-[#2F2128] truncate">
                   {strip.title}
                 </h3>
 
-                {/* Zero-pill clean inline metadata */}
                 <p className="text-xs text-[#7A5B6B] mt-1 mb-4 truncate">
                   {getThemeName(strip.frameTheme)} · {getLayoutName(strip.layout)} · {formatDate(strip.createdAt)}
                 </p>
@@ -136,7 +135,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
                   <a
                     href={strip.imageUrl}
                     download={`daisybooth-${strip.id.slice(0, 6)}.png`}
-                    className="flex-1 px-3 py-2 rounded-lg bg-[#FDF2F6] hover:bg-[#F9E1EB] text-[#35242D] text-xs font-semibold text-center inline-flex items-center justify-center gap-1.5 transition-colors"
+                    className="flex-1 px-3 py-2 rounded-lg bg-[#FDF2F6] hover:bg-[#F9E1EB] text-[#2F2128] text-xs font-semibold text-center inline-flex items-center justify-center gap-1.5 transition-colors"
                   >
                     <Download className="w-3.5 h-3.5" />
                     Unduh
@@ -171,7 +170,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
           >
             <div className="flex items-start justify-between gap-4 mb-4">
               <div>
-                <h3 className="font-serif text-2xl font-bold text-[#35242D]">{activeLightbox.title}</h3>
+                <h3 className="text-xl font-bold text-[#2F2128]">{activeLightbox.title}</h3>
                 <p className="text-xs text-[#7A5B6B] mt-1">
                   {getThemeName(activeLightbox.frameTheme)} · {getLayoutName(activeLightbox.layout)} ·{' '}
                   {formatDate(activeLightbox.createdAt)}
@@ -181,7 +180,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
                 type="button"
                 onClick={() => setActiveLightbox(null)}
                 aria-label="Tutup pratinjau"
-                className="w-9 h-9 rounded-xl bg-[#FDF2F6] hover:bg-[#F9E1EB] text-[#35242D] flex items-center justify-center cursor-pointer"
+                className="w-9 h-9 rounded-xl bg-[#FDF2F6] hover:bg-[#F9E1EB] text-[#2F2128] flex items-center justify-center cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -207,7 +206,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
               <a
                 href={activeLightbox.imageUrl}
                 download={`daisybooth-${activeLightbox.id.slice(0, 6)}.png`}
-                className="px-5 py-2.5 rounded-xl bg-[#F49DBB] hover:bg-[#EB87AA] text-[#2E1F27] text-sm font-semibold inline-flex items-center gap-2 transition-colors"
+                className="px-5 py-2.5 rounded-xl bg-[#F49DBB] hover:bg-[#EB87AA] text-[#2B1B23] text-sm font-semibold inline-flex items-center gap-2 transition-colors"
               >
                 <Download className="w-4 h-4" />
                 Unduh PNG

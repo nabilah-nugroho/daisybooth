@@ -22,7 +22,7 @@ export const MASCOT_CROPS: Record<MascotPose, CropRect> = {
   main: { x: 40, y: 248, w: 728, h: 676 },
   windowPeek: { x: 754, y: 92, w: 424, h: 398 },
   photoFan: { x: 1172, y: 114, w: 328, h: 384 },
-  cameraHug: { x: 740, y: 494, w: 414, h: 432 },
+  cameraHug: { x: 800, y: 500, w: 354, h: 424 },
   sittingStrip: { x: 1146, y: 544, w: 354, h: 386 },
 };
 

@@ -2,25 +2,21 @@ import React, { useState } from 'react';
 import { Camera } from 'lucide-react';
 import { STUDIO_ASSETS } from '../data/themes';
 import { MascotSprite } from './MascotSprite';
-import { ButterflyMotif, DaisyMotif } from './ScallopDivider';
 
 interface HeroSectionProps {
   onStartBooth: () => void;
 }
 
-const PolaroidCard: React.FC<{
+const PreviewPolaroid: React.FC<{
   src: string;
   alt: string;
   caption: string;
-  tiltClass: string;
-}> = ({ src, alt, caption, tiltClass }) => {
+}> = ({ src, alt, caption }) => {
   const [failed, setFailed] = useState(false);
 
   return (
-    <div
-      className={`bg-white p-3 pb-7 rounded-lg shadow-[0_14px_34px_rgba(88,52,70,0.12)] border border-[#F5E4EC] w-56 sm:w-64 transition-transform duration-300 hover:rotate-0 ${tiltClass}`}
-    >
-      <div className="aspect-square w-full overflow-hidden rounded-sm bg-[#FCEBF2] flex items-center justify-center">
+    <div className="bg-white p-2.5 pb-4 rounded-2xl border border-[#F2DCE6] shadow-[0_8px_24px_rgba(88,52,70,0.08)]">
+      <div className="aspect-square w-full overflow-hidden rounded-xl bg-[#FCEBF2] flex items-center justify-center">
         {!failed ? (
           <img
             src={src}
@@ -31,12 +27,12 @@ const PolaroidCard: React.FC<{
           />
         ) : (
           <div className="flex flex-col items-center justify-center gap-2 p-4 text-center text-[#7A5B6B]">
-            <Camera className="w-7 h-7" />
+            <Camera className="w-6 h-6" />
             <span className="text-xs font-medium">{caption}</span>
           </div>
         )}
       </div>
-      <p className="mt-3 text-center font-serif italic text-sm text-[#5A424E]">{caption}</p>
+      <p className="mt-2.5 text-center text-xs font-semibold text-[#5A424E]">{caption}</p>
     </div>
   );
 };
@@ -45,86 +41,76 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartBooth }) => {
   return (
     <section
       id="beranda"
-      className="relative bg-gradient-to-b from-[#FFF4F8] via-[#FFF8FA] to-[#FCE9F1] pt-8 pb-16 md:pt-12 md:pb-20 px-6 overflow-hidden"
+      className="bg-gradient-to-b from-[#FFF3F7] to-[#FFF9FB] border-b border-[#F4E1E9] py-12 md:py-16 px-6"
     >
-      {/* Subtle floral motifs inspired by reference hero */}
-      <DaisyMotif className="hidden md:block absolute top-10 left-[12%] w-10 h-10 opacity-90 pointer-events-none" />
-      <DaisyMotif
-        className="hidden md:block absolute bottom-12 right-[14%] w-12 h-12 opacity-90 pointer-events-none"
-        centerColor="#C8C6F2"
-      />
-      <ButterflyMotif className="hidden lg:block absolute top-16 right-[22%] w-11 h-11 opacity-85 pointer-events-none" />
-
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-8">
-        {/* Left tilted Polaroid + Mascot */}
-        <div className="relative order-2 lg:order-1 shrink-0">
-          <PolaroidCard
-            src={STUDIO_ASSETS.heroLeft}
-            alt="Potret studio pastel dengan kamera instan"
-            caption="Sweet Instant Pose"
-            tiltClass="-rotate-6"
-          />
-          <DaisyMotif className="absolute -bottom-4 -left-4 w-10 h-10 drop-shadow-sm pointer-events-none" />
-          <div className="hidden sm:block absolute -bottom-10 -right-14 z-10 drop-shadow-[0_10px_18px_rgba(92,56,74,0.16)]">
-            <MascotSprite
-              pose="main"
-              alt="Maskot DaisyBooth memegang kamera pink dan strip foto"
-              className="w-36 h-36 lg:w-44 lg:h-44"
-            />
-          </div>
-        </div>
-
-        {/* Center editorial boutique centerpiece */}
-        <div className="order-1 lg:order-2 max-w-xl text-center">
-          <div className="sm:hidden flex justify-center mb-2">
-            <MascotSprite
-              pose="main"
-              alt="Maskot DaisyBooth memegang kamera pink dan strip foto"
-              className="w-36 h-36"
-            />
-          </div>
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#835B6E] mb-3">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+        {/* Left: Clean Editorial Copy */}
+        <div className="lg:col-span-6 text-center lg:text-left">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#9B5A76] mb-3">
             Studio Photobooth Pastel
           </p>
           <h1
-            className="font-serif text-4xl sm:text-5xl lg:text-[3.25rem] font-bold leading-[1.12] tracking-tight text-[#35242D] mb-5"
+            className="text-3xl sm:text-4xl lg:text-[2.75rem] font-extrabold leading-[1.15] tracking-tight text-[#2F2128] mb-4"
             style={{ textWrap: 'balance' }}
           >
-            Abadikan Momen Manis <span className="italic font-semibold text-[#C95684]">Dalam Sekejap</span>
+            Abadikan Momen Manis Dalam Kolase Estetik
           </h1>
-          <p className="text-base sm:text-lg text-[#5A424E] leading-relaxed mb-8 max-w-lg mx-auto">
-            Pilih bingkai pastel bergelombang, atur hitung mundur kamera atau unggah foto favorit, dan cetak strip Polaroid estetik langsung dari peramban Anda.
+          <p className="text-base text-[#5E4652] leading-relaxed mb-7 max-w-lg mx-auto lg:mx-0">
+            Pilih konsep rumah polka, Polaroid nostalgia, kalender spesial, atau strip klasik. Ambil pose lewat kamera langsung maupun unggah foto dan ekspor PNG resolusi tinggi.
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-4">
+          <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3">
             <button
               type="button"
               onClick={onStartBooth}
-              className="px-7 py-3.5 rounded-xl bg-[#F49DBB] hover:bg-[#EB87AA] active:scale-[0.98] text-[#2E1F27] font-semibold text-base shadow-[0_6px_18px_rgba(235,135,170,0.28)] transition-all duration-150 cursor-pointer whitespace-nowrap focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#35242D]"
+              className="px-6 py-3 rounded-xl bg-[#F49DBB] hover:bg-[#EB87AA] active:scale-[0.98] text-[#2B1B23] font-semibold text-sm transition-all duration-150 cursor-pointer whitespace-nowrap"
             >
-              Ambil Strip Foto
+              Buka Studio Foto
             </button>
             <a
-              href="#koleksi"
-              className="px-6 py-3.5 rounded-xl bg-white/90 hover:bg-white border border-[#EED3DF] text-[#35242D] font-medium text-base transition-colors whitespace-nowrap"
+              href="#galeri"
+              className="px-5 py-3 rounded-xl bg-white hover:bg-[#FFF4F8] border border-[#EED3DF] text-[#2F2128] font-semibold text-sm transition-colors whitespace-nowrap"
             >
-              Lihat Koleksi Bingkai
+              Lihat Galeri
             </a>
           </div>
         </div>
 
-        {/* Right tilted Polaroid */}
-        <div className="relative order-3 shrink-0">
-          <PolaroidCard
-            src={STUDIO_ASSETS.heroRight}
-            alt="Koleksi strip foto pastel dengan pita satin dan bunga daisy"
-            caption="Pastel Strip Print"
-            tiltClass="rotate-6"
-          />
-          <DaisyMotif
-            className="absolute -top-4 -right-4 w-10 h-10 drop-shadow-sm pointer-events-none"
-            centerColor="#F9C5DA"
-          />
+        {/* Right: Clean, Non-Overlapping Polaroid + Mascot Stage */}
+        <div className="lg:col-span-6">
+          <div className="bg-[#FCEBF2]/75 border border-[#F3DCE6] rounded-3xl p-5 sm:p-6">
+            <div className="grid grid-cols-2 gap-4 items-center">
+              <PreviewPolaroid
+                src={STUDIO_ASSETS.heroLeft}
+                alt="Potret studio pastel dengan kamera instan"
+                caption="Kamera Studio"
+              />
+              <PreviewPolaroid
+                src={STUDIO_ASSETS.heroRight}
+                alt="Koleksi strip foto pastel dengan pita satin dan bunga daisy"
+                caption="Kolase Strip"
+              />
+            </div>
+
+            <div className="mt-4 pt-4 border-t border-[#F1D5E2] flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <MascotSprite
+                  pose="main"
+                  alt="Maskot DaisyBooth memegang kamera pink dan strip foto"
+                  className="w-16 h-16 shrink-0"
+                />
+                <div>
+                  <p className="text-sm font-bold text-[#2F2128]">Maskot DaisyBooth</p>
+                  <p className="text-xs text-[#644B58]">
+                    Tersedia sebagai stiker langsung di hasil cetakan foto
+                  </p>
+                </div>
+              </div>
+              <span className="hidden sm:inline-block text-xs font-medium text-[#7A5B6B] whitespace-nowrap">
+                7 Template · 6 Filter
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
