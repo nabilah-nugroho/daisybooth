@@ -1,41 +1,10 @@
-import React, { useState } from 'react';
-import { Camera } from 'lucide-react';
-import { STUDIO_ASSETS } from '../data/themes';
+import React from 'react';
+import { Camera, Sparkles } from 'lucide-react';
 import { MascotSprite } from './MascotSprite';
 
 interface HeroSectionProps {
   onStartBooth: () => void;
 }
-
-const PreviewPolaroid: React.FC<{
-  src: string;
-  alt: string;
-  caption: string;
-}> = ({ src, alt, caption }) => {
-  const [failed, setFailed] = useState(false);
-
-  return (
-    <div className="bg-white p-2.5 pb-4 rounded-2xl border border-[#F2DCE6] shadow-[0_8px_24px_rgba(88,52,70,0.08)]">
-      <div className="aspect-square w-full overflow-hidden rounded-xl bg-[#FCEBF2] flex items-center justify-center">
-        {!failed ? (
-          <img
-            src={src}
-            alt={alt}
-            referrerPolicy="no-referrer"
-            onError={() => setFailed(true)}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="flex flex-col items-center justify-center gap-2 p-4 text-center text-[#7A5B6B]">
-            <Camera className="w-6 h-6" />
-            <span className="text-xs font-medium">{caption}</span>
-          </div>
-        )}
-      </div>
-      <p className="mt-2.5 text-center text-xs font-semibold text-[#5A424E]">{caption}</p>
-    </div>
-  );
-};
 
 export const HeroSection: React.FC<HeroSectionProps> = ({ onStartBooth }) => {
   return (
@@ -76,28 +45,45 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartBooth }) => {
           </div>
         </div>
 
-        {/* Right: Clean, Non-Overlapping Polaroid + Mascot Stage */}
+        {/* Right: Clean CSS Polaroid Cards & User Mascot Showcase */}
         <div className="lg:col-span-6">
           <div className="bg-[#FCEBF2]/75 border border-[#F3DCE6] rounded-3xl p-5 sm:p-6">
-            <div className="grid grid-cols-2 gap-4 items-center">
-              <PreviewPolaroid
-                src={STUDIO_ASSETS.heroLeft}
-                alt="Potret studio pastel dengan kamera instan"
-                caption="Kamera Studio"
-              />
-              <PreviewPolaroid
-                src={STUDIO_ASSETS.heroRight}
-                alt="Koleksi strip foto pastel dengan pita satin dan bunga daisy"
-                caption="Kolase Strip"
-              />
+            <div className="grid grid-cols-2 gap-4 items-stretch">
+              <div className="bg-white p-3 pb-4 rounded-2xl border border-[#F2DCE6] shadow-[0_8px_24px_rgba(88,52,70,0.08)] flex flex-col">
+                <div className="aspect-square w-full rounded-xl bg-gradient-to-br from-[#FDE7F0] to-[#F9C5DA] flex flex-col items-center justify-center p-3">
+                  <MascotSprite
+                    pose="main"
+                    alt="Maskot DaisyBooth memegang kamera dan strip foto"
+                    className="w-28 h-28 sm:w-32 sm:h-32"
+                  />
+                </div>
+                <p className="mt-2.5 text-center text-xs font-semibold text-[#5A424E] inline-flex items-center justify-center gap-1.5">
+                  <Camera className="w-3.5 h-3.5 text-[#D86C96]" />
+                  Kamera Studio
+                </p>
+              </div>
+
+              <div className="bg-white p-3 pb-4 rounded-2xl border border-[#F2DCE6] shadow-[0_8px_24px_rgba(88,52,70,0.08)] flex flex-col">
+                <div className="aspect-square w-full rounded-xl bg-gradient-to-br from-[#EEEDFC] to-[#D9D7F7] flex flex-col items-center justify-center p-3">
+                  <MascotSprite
+                    pose="photoFan"
+                    alt="Maskot DaisyBooth membawa kolase Polaroid"
+                    className="w-28 h-28 sm:w-32 sm:h-32"
+                  />
+                </div>
+                <p className="mt-2.5 text-center text-xs font-semibold text-[#5A424E] inline-flex items-center justify-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-[#7A74C9]" />
+                  Kolase Strip
+                </p>
+              </div>
             </div>
 
             <div className="mt-4 pt-4 border-t border-[#F1D5E2] flex items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <MascotSprite
-                  pose="main"
-                  alt="Maskot DaisyBooth memegang kamera pink dan strip foto"
-                  className="w-16 h-16 shrink-0"
+                  pose="windowPeek"
+                  alt="Maskot DaisyBooth mengintip dari bingkai studio"
+                  className="w-12 h-12 shrink-0"
                 />
                 <div>
                   <p className="text-sm font-bold text-[#2F2128]">Maskot DaisyBooth</p>

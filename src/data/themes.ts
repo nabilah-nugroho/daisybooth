@@ -1,20 +1,5 @@
 import { FrameTheme, PhotoFilter, StickerMotifId, StripLayout } from '../types/photobooth';
 
-export const STUDIO_ASSETS = {
-  heroLeft: '/src/assets/images/hero_polaroid_left_1795235848206.jpg',
-  heroRight: '/src/assets/images/hero_polaroid_right_1795235848608.jpg',
-  samplePose1: '/src/assets/images/sample_pose_one_1795235847881.jpg',
-  samplePose2: '/src/assets/images/sample_pose_two_1795235847909.jpg',
-};
-
-export const SAMPLE_POSES: string[] = [
-  STUDIO_ASSETS.samplePose1,
-  STUDIO_ASSETS.samplePose2,
-  STUDIO_ASSETS.heroLeft,
-  STUDIO_ASSETS.heroRight,
-  STUDIO_ASSETS.samplePose1,
-];
-
 export const FRAME_THEMES: FrameTheme[] = [
   {
     id: 'blush-daisy',

@@ -57,11 +57,3 @@ export interface SavedStrip {
   imageUrl: string;
   createdAt: string;
 }
-
-export interface LaravelFile {
-  key: string;
-  label: string;
-  relPath: string;
-  language: string;
-  content: string;
-}

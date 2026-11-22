@@ -132,44 +132,6 @@ async function startServer(): Promise<void> {
     res.json({ deleted: true });
   });
 
-  app.get('/api/laravel-files', (_req, res) => {
-    const fileSpecs = [
-      { key: 'routes', label: 'routes/web.php', relPath: 'laravel/routes/web.php', language: 'php' },
-      {
-        key: 'controller',
-        label: 'app/Http/Controllers/PhotoboothController.php',
-        relPath: 'laravel/app/Http/Controllers/PhotoboothController.php',
-        language: 'php',
-      },
-      {
-        key: 'model',
-        label: 'app/Models/PhotoStrip.php',
-        relPath: 'laravel/app/Models/PhotoStrip.php',
-        language: 'php',
-      },
-      {
-        key: 'migration',
-        label: 'database/migrations/..._create_photo_strips_table.php',
-        relPath: 'laravel/database/migrations/2026_11_20_000001_create_photo_strips_table.php',
-        language: 'php',
-      },
-      {
-        key: 'blade',
-        label: 'resources/views/photobooth.blade.php',
-        relPath: 'laravel/resources/views/photobooth.blade.php',
-        language: 'html',
-      },
-    ];
-
-    const files = fileSpecs.map((spec) => {
-      const fullPath = path.join(ROOT_DIR, spec.relPath);
-      const content = fs.existsSync(fullPath) ? fs.readFileSync(fullPath, 'utf-8') : '';
-      return { ...spec, content };
-    });
-
-    res.json({ files });
-  });
-
   if (process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({
       server: { middlewareMode: true },

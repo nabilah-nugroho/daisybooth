@@ -4,7 +4,6 @@ import { Footer } from './components/Footer';
 import { GallerySection } from './components/GallerySection';
 import { Header } from './components/Header';
 import { HeroSection } from './components/HeroSection';
-import { LaravelBlueprintSection } from './components/LaravelBlueprintSection';
 import { PhotoboothStudio } from './components/PhotoboothStudio';
 import { FrameThemeId, SavedStrip } from './types/photobooth';
 
@@ -83,8 +82,6 @@ export default function App() {
           onDeleteStrip={handleDeleteStrip}
           onJumpToStudio={scrollToStudio}
         />
-
-        <LaravelBlueprintSection />
       </main>
 
       <Footer />

@@ -15,7 +15,6 @@ import {
 import {
   FRAME_THEMES,
   PHOTO_FILTERS,
-  SAMPLE_POSES,
   STICKER_MOTIFS,
   STRIP_LAYOUTS,
 } from '../data/themes';
@@ -26,6 +25,7 @@ import {
   StickerMotifId,
   StripLayoutId,
 } from '../types/photobooth';
+import { generateSamplePoses } from '../utils/samplePoses';
 import { playCountdownBeep, playPrintSlideSound, playShutterSound } from '../utils/sound';
 import { renderPhotoStripCanvas } from '../utils/stripRenderer';
 import { MascotSprite } from './MascotSprite';
@@ -388,7 +388,7 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
 
   const handleUseSamplePhotos = () => {
     setSaveMessage(null);
-    setPhotos(SAMPLE_POSES);
+    setPhotos(generateSamplePoses());
     setActiveSlot(0);
     playShutterSound();
     window.setTimeout(() => triggerPrintAnimation(), 180);

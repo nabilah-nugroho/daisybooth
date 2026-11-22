@@ -37,12 +37,6 @@ export const Header: React.FC<HeaderProps> = ({ onStartBooth }) => {
           >
             Galeri
           </a>
-          <a
-            href="#laravel"
-            className="hover:text-[#2F2128] transition-colors whitespace-nowrap shrink-0"
-          >
-            Kode Laravel
-          </a>
         </nav>
 
         <div className="flex items-center shrink-0">
