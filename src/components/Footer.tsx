@@ -11,12 +11,9 @@ export const Footer: React.FC = () => {
             alt="Maskot DaisyBooth"
             className="w-11 h-11 shrink-0"
           />
-          <div>
-            <span className="text-base font-extrabold tracking-tight block leading-tight">
-              DaisyBooth
-            </span>
-            <span className="text-xs text-[#644B58]">Studio Photobooth Pastel</span>
-          </div>
+          <span className="text-base font-extrabold tracking-tight leading-tight">
+            DaisyBooth
+          </span>
         </div>
 
         <nav className="flex items-center gap-6 text-xs sm:text-sm font-medium text-[#5E4652]">

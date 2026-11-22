@@ -69,7 +69,6 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
   const [cameraActive, setCameraActive] = useState<boolean>(false);
   const [cameraStarting, setCameraStarting] = useState<boolean>(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
-  const [cameraBlockedInFrame, setCameraBlockedInFrame] = useState<boolean>(false);
   const [countdownValue, setCountdownValue] = useState<number | null>(null);
   const [isCapturingSequence, setIsCapturingSequence] = useState<boolean>(false);
   const [flashActive, setFlashActive] = useState<boolean>(false);
@@ -197,7 +196,6 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
 
   const startCamera = async () => {
     setCameraError(null);
-    setCameraBlockedInFrame(false);
 
     if (typeof window !== 'undefined' && !window.isSecureContext) {
       setCameraError(
@@ -247,14 +245,10 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
       }
     } catch (err) {
       const errorName = err instanceof DOMException ? err.name : '';
-      const inIframe = typeof window !== 'undefined' && window.self !== window.top;
 
       if (errorName === 'NotAllowedError' || errorName === 'PermissionDeniedError' || errorName === 'SecurityError') {
-        setCameraBlockedInFrame(inIframe);
         setCameraError(
-          inIframe
-            ? 'Izin kamera ditolak atau dibatasi di dalam iframe pratinjau. Klik "Buka di Tab Baru" di bawah atau izinkan kamera pada bilah alamat browser.'
-            : 'Izin kamera ditolak oleh browser. Klik ikon gembok/kamera di bilah alamat browser untuk mengizinkan akses kamera.'
+          'Izin kamera ditolak. Aktifkan akses kamera di pengaturan browser atau gunakan Unggah Foto.'
         );
       } else if (errorName === 'NotFoundError' || errorName === 'DevicesNotFoundError') {
         setCameraError(
@@ -509,18 +503,13 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
   return (
     <section id="studio" className="py-14 md:py-18 px-6 bg-[#FFF9FB]">
       <div className="max-w-6xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#9B5A76] mb-1.5">
-              Studio Interaktif
-            </p>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#2F2128]">
-              Pilih Konsep & Ambil Posemu
-            </h2>
-          </div>
-          <p className="text-sm text-[#644B58]">
-            {currentLayout.name} · {currentLayout.slots} Pose · {currentLayout.description}
+        <div className="mb-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#9B5A76] mb-1.5">
+            Studio Interaktif
           </p>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#2F2128]">
+            Pilih Konsep &amp; Ambil Posemu
+          </h2>
         </div>
 
         {/* Single Unified Template Selector */}
@@ -605,12 +594,9 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
                         alt="Maskot DaisyBooth memeluk kamera pink"
                         className="w-24 h-24 sm:w-28 sm:h-28 mb-2 shrink-0"
                       />
-                      <h3 className="text-lg font-bold text-[#2F2128] mb-1.5">
-                        Siap Berpose di Studio?
+                      <h3 className="text-lg font-bold text-[#2F2128] mb-4">
+                        Siap Berpose?
                       </h3>
-                      <p className="text-sm text-[#644B58] max-w-sm mb-5">
-                        Aktifkan kamera untuk mengisi {slotCount} pose otomatis, atau coba langsung dengan Foto Contoh.
-                      </p>
                       <div className="flex flex-wrap items-center justify-center gap-3">
                         <button
                           type="button"
@@ -629,19 +615,9 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
                         </button>
                       </div>
                       {cameraError && (
-                        <div className="mt-4 max-w-md bg-[#FDE8EF] px-4 py-2.5 rounded-xl text-xs text-[#A33058] space-y-2">
-                          <p>{cameraError}</p>
-                          {cameraBlockedInFrame && typeof window !== 'undefined' && (
-                            <a
-                              href={window.location.href}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-block font-semibold underline text-[#2F2128]"
-                            >
-                              Buka di Tab Baru
-                            </a>
-                          )}
-                        </div>
+                        <p className="mt-4 max-w-md bg-[#FDE8EF] px-4 py-2.5 rounded-xl text-xs text-[#A33058]">
+                          {cameraError}
+                        </p>
                       )}
                     </div>
                   )}
@@ -663,12 +639,9 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
                   <div className="w-14 h-14 rounded-2xl bg-[#EEEDFC] text-[#4C458F] flex items-center justify-center mb-3">
                     <Upload className="w-7 h-7" />
                   </div>
-                  <h3 className="text-lg font-bold text-[#2F2128] mb-1.5">
-                    Unggah Foto Dari Perangkat
+                  <h3 className="text-lg font-bold text-[#2F2128] mb-4">
+                    Unggah Foto
                   </h3>
-                  <p className="text-sm text-[#644B58] max-w-sm mb-5">
-                    Pilih hingga {slotCount} foto sekaligus untuk mengisi kolase {currentLayout.name}.
-                  </p>
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -742,9 +715,6 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-semibold text-[#2F2128]">
                   Slot Pose ({filledCount}/{slotCount})
-                </span>
-                <span className="text-xs text-[#7A5B6B]">
-                  Klik slot untuk mengganti posisi bidik
                 </span>
               </div>
 

@@ -53,18 +53,13 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
   return (
     <section id="galeri" className="py-14 md:py-18 px-6 bg-[#FFF9FB]">
       <div className="max-w-6xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#9B5A76] mb-1.5">
-              Arsip Kenangan
-            </p>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#2F2128]">
-              Galeri Strip Foto
-            </h2>
-          </div>
-          <p className="text-sm text-[#644B58]">
-            Semua strip yang Anda simpan dari studio tersimpan di sini untuk diunduh kembali.
+        <div className="mb-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#9B5A76] mb-1.5">
+            Galeri
           </p>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#2F2128]">
+            Galeri Strip Foto
+          </h2>
         </div>
 
         {isLoading ? (
@@ -87,12 +82,9 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
               alt="Maskot DaisyBooth duduk memandangi strip foto"
               className="w-28 h-28 mx-auto mb-3"
             />
-            <h3 className="text-xl font-bold text-[#2F2128] mb-2">
+            <h3 className="text-xl font-bold text-[#2F2128] mb-5">
               Galeri Masih Kosong
             </h3>
-            <p className="text-sm text-[#644B58] max-w-md mx-auto mb-6">
-              Ambil foto di ruang studio atau gunakan foto contoh, lalu klik Simpan ke Galeri untuk menyimpannya di sini.
-            </p>
             <button
               type="button"
               onClick={onJumpToStudio}

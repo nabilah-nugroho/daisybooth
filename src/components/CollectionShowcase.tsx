@@ -14,18 +14,13 @@ export const CollectionShowcase: React.FC<CollectionShowcaseProps> = ({
   return (
     <section id="koleksi" className="bg-[#F4F3FC] border-y border-[#E6E4F7] py-14 px-6">
       <div className="max-w-6xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#5B5494] mb-1.5">
-              Koleksi Tema Pastel
-            </p>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#272343]">
-              Pilih Nuansa Warna Bingkai
-            </h2>
-          </div>
-          <p className="text-sm text-[#534E7A]">
-            Klik salah satu tema di bawah untuk menerapkannya langsung ke studio.
+        <div className="mb-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#5B5494] mb-1.5">
+            Tema Warna
           </p>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#272343]">
+            Pilih Nuansa Bingkai
+          </h2>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -58,10 +53,7 @@ export const CollectionShowcase: React.FC<CollectionShowcaseProps> = ({
                   </span>
                 </div>
 
-                <div>
-                  <h3 className="text-base font-bold text-[#272343] mb-1">{theme.name}</h3>
-                  <p className="text-xs text-[#5A5582] leading-relaxed">{theme.tagline}</p>
-                </div>
+                <h3 className="text-base font-bold text-[#272343]">{theme.name}</h3>
               </button>
             );
           })}
