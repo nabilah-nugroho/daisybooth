@@ -26,6 +26,7 @@ import {
   StripLayoutId,
 } from '../types/photobooth';
 import { generateSamplePoses } from '../utils/samplePoses';
+import { saveGalleryStrip } from '../utils/galleryStorage';
 import { playCountdownBeep, playPrintSlideSound, playShutterSound } from '../utils/sound';
 import { renderPhotoStripCanvas } from '../utils/stripRenderer';
 import { MascotSprite } from './MascotSprite';
@@ -484,25 +485,16 @@ export const PhotoboothStudio: React.FC<PhotoboothStudioProps> = ({
       });
 
       const imageData = exportCanvas.toDataURL('image/png');
-      const response = await fetch('/api/gallery', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: caption.trim() || 'Sweet Memories',
-          frameTheme: selectedTheme,
-          layout,
-          filter,
-          sticker,
-          imageData,
-        }),
+      const savedStrip = await saveGalleryStrip({
+        title: caption.trim() || 'Sweet Memories',
+        frameTheme: selectedTheme,
+        layout,
+        filter,
+        sticker,
+        imageData,
       });
 
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message || 'Gagal menyimpan strip ke galeri.');
-      }
-
-      onStripSaved(data.strip);
+      onStripSaved(savedStrip);
       setSaveMessage({ type: 'success', text: 'Hasil kolase berhasil disimpan ke Galeri!' });
     } catch (error) {
       setSaveMessage({

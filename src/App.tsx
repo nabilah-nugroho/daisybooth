@@ -6,6 +6,7 @@ import { Header } from './components/Header';
 import { HeroSection } from './components/HeroSection';
 import { PhotoboothStudio } from './components/PhotoboothStudio';
 import { FrameThemeId, SavedStrip } from './types/photobooth';
+import { deleteGalleryStrip, loadGalleryStrips } from './utils/galleryStorage';
 
 export default function App() {
   const [selectedTheme, setSelectedTheme] = useState<FrameThemeId>('blush-daisy');
@@ -15,15 +16,8 @@ export default function App() {
   const fetchGallery = useCallback(async () => {
     setGalleryLoading(true);
     try {
-      const response = await fetch('/api/gallery');
-      if (response.ok) {
-        const data = await response.json();
-        if (Array.isArray(data.strips)) {
-          setStrips(data.strips);
-        }
-      }
-    } catch {
-      // Keep empty list on network error
+      const items = await loadGalleryStrips();
+      setStrips(items);
     } finally {
       setGalleryLoading(false);
     }
@@ -50,10 +44,8 @@ export default function App() {
   };
 
   const handleDeleteStrip = async (id: string) => {
-    const response = await fetch(`/api/gallery/${encodeURIComponent(id)}`, {
-      method: 'DELETE',
-    });
-    if (response.ok) {
+    const deleted = await deleteGalleryStrip(id);
+    if (deleted) {
       setStrips((prev) => prev.filter((item) => item.id !== id));
     }
   };
@@ -63,7 +55,7 @@ export default function App() {
       <Header onStartBooth={scrollToStudio} />
 
       <main className="flex-1">
-        <HeroSection onStartBooth={scrollToStudio} />
+        <HeroSection />
 
         <PhotoboothStudio
           selectedTheme={selectedTheme}
